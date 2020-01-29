@@ -8,8 +8,8 @@ import java.util.List;
 public class TriggerService {
     private final String dataSource;
 
-    public TriggerService(String url) {
-        this.dataSource = url;
+    public TriggerService(String dataSource) {
+        this.dataSource = dataSource;
     }
 
     public void init() {
