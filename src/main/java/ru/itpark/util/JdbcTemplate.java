@@ -1,7 +1,10 @@
 package ru.itpark.util;
 
-import ru.itpark.exception.DataAccesException;
 
+
+import ru.itpark.exception.DataAccessException;
+
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,25 +18,26 @@ public class JdbcTemplate {
         ) {
             return executor.execute(preparedStatement);
         } catch (SQLException e) {
-            throw new DataAccesException();
-        }
-    }
-
-    //    public static void executeInit(DataSource dataSource, String sql) {
-//        execute(dataSource, sql, pstmt -> pstmt.execute());
-//    }
-    public static void executeInit(String dataSource, String sql) {
-
-        try (
-                Connection connection = DriverManager.getConnection(dataSource);
-                Statement statement = connection.createStatement()
-
-        ) {
-            statement.execute(sql);
-        } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
+
+//    public static void executeInit(DataSource dataSource, String sql) {
+//        execute(dataSource, sql, pstmt -> pstmt.execute());
+//    }
+public static void executeInit(String dataSource, String sql) {
+
+    try (
+            Connection connection = DriverManager.getConnection(dataSource);
+            Statement statement = connection.createStatement();
+
+    ) {
+        statement.execute(sql);
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
 
     public static void executeCreateQuery(String dataSource, String sql, PreparedStatementSetter setter) {
         execute(dataSource, sql, pstmt -> {
