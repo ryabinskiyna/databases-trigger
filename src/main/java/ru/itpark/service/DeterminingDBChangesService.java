@@ -5,12 +5,27 @@ import ru.itpark.util.JdbcTemplate;
 
 import java.util.List;
 
+/**
+ * Мониторинг изменений в базах данных с помощью использования механизма триггеров
+ *
+ * @author Рябинский Никита
+ */
 public class DeterminingDBChangesService {
     private final String dataSource;
+
+    /**
+     * Constructor
+     *
+     * @param dataSource ссылка на базу данных
+     */
 
     public DeterminingDBChangesService(String dataSource) {
         this.dataSource = dataSource;
     }
+
+    /**
+     * метод для работы с таблицей для примера
+     */
 
     public void init() {
         JdbcTemplate.executeInit(
@@ -19,12 +34,24 @@ public class DeterminingDBChangesService {
         );
     }
 
+    /**
+     * метод для работы с таблицей для примера
+     *
+     * @param table название удаляемой таблицы
+     */
+
     public void drop(String table) {
         JdbcTemplate.executeInit(
                 dataSource,
                 "DROP TABLE IF EXISTS " + table + ";"
         );
     }
+
+    /**
+     * метод для работы с таблицей для примера
+     *
+     * @param house объект класса House, который хотим добавить в таблицу houses
+     */
 
     public void insert(House house) {
         String sql = "INSERT INTO houses (price, district, underground) VALUES(?, ?, ?);";
@@ -36,6 +63,12 @@ public class DeterminingDBChangesService {
         });
     }
 
+    /**
+     * метод для работы с таблицей для примера
+     *
+     * @param house объект класса House, который хотим обновить в таблице houses
+     */
+
     public void update(House house) {
         String sql = "UPDATE houses SET price = ?, district = ?, underground = ? WHERE id = ?;";
 
@@ -46,6 +79,10 @@ public class DeterminingDBChangesService {
             pstmt.setInt(4, house.getId());
         });
     }
+
+    /**
+     * триггеры вставки и обновления. при срабатывании триггера данные попадают в таблицу houses_log
+     */
 
     public void initTrigger() {
         JdbcTemplate.executeInit(
@@ -61,6 +98,11 @@ public class DeterminingDBChangesService {
                 "CREATE TRIGGER IF NOT EXISTS after_update AFTER UPDATE ON houses BEGIN INSERT INTO houses_log(new_id, new_price, new_district, new_underground, date, operation) VALUES (OLD.id, OLD.price, OLD.district, OLD.underground, datetime('now'), 'upd');END;"
         );
     }
+
+    /**
+     * @param date день, за который интересуют изменения
+     * @return собираем изменения в коллекцию LinkedList
+     */
 
     public List<House> getAllChanges(String date) {
         return JdbcTemplate.executeQuery(

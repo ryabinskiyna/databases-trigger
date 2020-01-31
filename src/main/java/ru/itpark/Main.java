@@ -3,6 +3,8 @@ package ru.itpark;
 import ru.itpark.model.House;
 import ru.itpark.service.DeterminingDBChangesService;
 
+import java.util.Date;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -14,7 +16,7 @@ public class Main {
         service.insert(new House(0,1,"d1","u1"));
         System.out.println(service.getAllChanges("2020-01-30"));
         service.update(new House(1,2,"d1","u1"));
-        System.out.println(service.getAllChanges("2020-01-30"));
+        System.out.println(service.getAllChanges(new Date().toString()));
 
 
 
